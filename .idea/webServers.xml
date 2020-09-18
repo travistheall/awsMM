@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="6063486d-f39b-4347-9e9f-1ac08858cae3" name="nutritionDB" url="http://ec2-3-15-155-66.us-east-2.compute.amazonaws.com">
+        <fileTransfer accessType="FTPS" host="ec2-3-15-155-66.us-east-2.compute.amazonaws.com" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
