@@ -18,9 +18,14 @@ class Mainfooddesc(models.Model):
         return self.mainfooddescription
 
     def abbNutVal(self):
+        print(self)
         return Fnddsnutval.objects.filter(
-            Q(foodcode=self.foodcode) & (Q(nutrientcode=208) | Q(nutrientcode=203) | Q(nutrientcode=204) | Q(
-                nutrientcode=205)))
+            Q(foodcode=self.foodcode) &
+            (Q(nutrientcode=208) |
+             Q(nutrientcode=203) |
+             Q(nutrientcode=204) |
+             Q(nutrientcode=205))
+        )
 
 
 class Foodportiondesc(models.Model):
