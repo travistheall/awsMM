@@ -1,3 +1,5 @@
+from abc import ABC
+
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import (Mainfooddesc,
@@ -6,6 +8,7 @@ from .models import (Mainfooddesc,
                      Foodportiondesc,
                      Fnddsnutval,
                      Nutdesc)
+from django.db.models import Q
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -25,54 +28,12 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'name']
 
 
-class MainfooddescSerializer(serializers.ModelSerializer):
-    additionalDescriptions = serializers.StringRelatedField(many=True)
-    foodcode_ingredients = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = Mainfooddesc
-        fields = [
-            'foodcode',
-            'mainfooddescription',
-            'additionalDescriptions',
-            'foodcode_ingredients'
-        ]
-
-
 class AddfooddescSerializer(serializers.ModelSerializer):
     class Meta:
         model = Addfooddesc
         fields = [
-            'foodcode',
-            'seqnum',
             'additionalfooddescription'
         ]
-
-
-class FoodportiondescSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Foodportiondesc
-        fields = [
-            'portiondescription',
-        ]
-
-
-class FoodweightsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Foodweights
-        fields = [
-            'foodcode',
-            'subcode',
-            'seqnum',
-            'portioncode',
-            'portionweight',
-        ]
-
-    def to_representation(self, instance):
-        response = super().to_representation(instance)
-        portionObj = FoodportiondescSerializer(instance.portioncode).data
-        response['portioncode'] = portionObj
-        return response
 
 
 class NutdescSerializer(serializers.HyperlinkedModelSerializer):
@@ -92,8 +53,47 @@ class FnddsnutvalSerializer(serializers.HyperlinkedModelSerializer):
             'nutrientvalue'
         ]
 
+
+class FoodweightsSerializer(serializers.ModelSerializer):
+    nutval = FnddsnutvalSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Foodweights
+        fields = [
+            'foodcode',
+            'subcode',
+            'seqnum',
+            'portioncode',
+            'portionweight',
+            'nutval'
+        ]
+
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        nutrObj = NutdescSerializer(instance.nutrientcode).data
-        response['nutrientcode'] = nutrObj
+        portionObj = FoodportiondescSerializer(instance.portioncode).data
+        response['portioncode'] = portionObj
         return response
+
+
+class MainfooddescSerializer(serializers.ModelSerializer):
+    additionalDescriptions = AddfooddescSerializer(many=True, read_only=True)
+    foodweights = FoodweightsSerializer(many=True, read_only=True)
+    nutrientvalues = FnddsnutvalSerializer(many=True, read_only=True, source='abbNutVal')
+
+    class Meta:
+        model = Mainfooddesc
+        fields = [
+            'foodcode',
+            'mainfooddescription',
+            'additionalDescriptions',
+            'foodweights',
+            'nutrientvalues',
+        ]
+
+
+class FoodportiondescSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Foodportiondesc
+        fields = [
+            'portiondescription',
+        ]

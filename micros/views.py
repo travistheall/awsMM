@@ -1,6 +1,7 @@
 # Django main imports
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
+from django.db.models import Q
 # Django Rest Framework imports
 from rest_framework import viewsets
 # My imports
@@ -85,11 +86,12 @@ class FoodportiondescSearchView(viewsets.ReadOnlyModelViewSet):
     serializer_class = FoodportiondescSerializer
 
 
-class FnddsnutvalSearchView(viewsets.ReadOnlyModelViewSet):
+class FnddsnutvalAbbrevSearchView(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows Additional Food Descriptions from FNDDS to be searched.
     """
-    queryset = Fnddsnutval.objects.filter(nutrientcode=203)
+    queryset = Fnddsnutval.objects.filter(
+        Q(nutrientcode=208) | Q(nutrientcode=203) | Q(nutrientcode=204) | Q(nutrientcode=205))
     serializer_class = FnddsnutvalSerializer
     filterset_class = FnddsnutvalFilter
     pagination_class = NutValSetPagination

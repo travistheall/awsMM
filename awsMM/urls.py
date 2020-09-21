@@ -30,7 +30,7 @@ router.register('maindesc', views.MainfooddescSearchView)
 router.register('adddesc', views.AddfooddescSearchView)
 router.register('weights', views.FoodweightsSearchView)
 router.register('portiondesc', views.FoodportiondescSearchView)
-router.register('nutval', views.FnddsnutvalSearchView)
+router.register('nutvalabb', views.FnddsnutvalAbbrevSearchView)
 router.register('nutdesc', views.NutdescSearchView)
 
 

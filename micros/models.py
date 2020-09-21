@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 
 class Mainfooddesc(models.Model):
@@ -15,6 +16,11 @@ class Mainfooddesc(models.Model):
 
     def __str__(self):
         return self.mainfooddescription
+
+    def abbNutVal(self):
+        return Fnddsnutval.objects.filter(
+            Q(foodcode=self.foodcode) & (Q(nutrientcode=208) | Q(nutrientcode=203) | Q(nutrientcode=204) | Q(
+                nutrientcode=205)))
 
 
 class Foodportiondesc(models.Model):
@@ -97,7 +103,8 @@ class Addfooddesc(models.Model):
     additionalfooddescription = models.CharField(db_column='AdditionalFoodDescription', max_length=80)
     startdate = models.DateTimeField(db_column='StartDate')
     enddate = models.DateTimeField(db_column='EndDate')
-    #id = models.IntegerField(blank=True, null=True)
+
+    # id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -141,9 +148,13 @@ class Foodweights(models.Model):
     portionweight = models.FloatField(db_column='PortionWeight')
     startdate = models.DateTimeField(db_column='StartDate')
     enddate = models.DateTimeField(db_column='EndDate')
-    #id = models.IntegerField(blank=True, null=True)
+
+    # id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'FoodWeights'
         unique_together = (('foodcode', 'subcode', 'seqnum', 'portioncode'),)
+
+    def __str__(self):
+        return self.portioncode.portiondescription + ": " + str(self.portionweight)
