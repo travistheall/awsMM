@@ -18,7 +18,6 @@ class Mainfooddesc(models.Model):
         return self.mainfooddescription
 
     def abbNutVal(self):
-        print(self)
         return Fnddsnutval.objects.filter(
             Q(foodcode=self.foodcode) &
             (Q(nutrientcode=208) |
@@ -153,13 +152,11 @@ class Foodweights(models.Model):
     portionweight = models.FloatField(db_column='PortionWeight')
     startdate = models.DateTimeField(db_column='StartDate')
     enddate = models.DateTimeField(db_column='EndDate')
-
-    # id = models.IntegerField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True)
 
     class Meta:
         managed = False
         db_table = 'FoodWeights'
-        unique_together = (('foodcode', 'subcode', 'seqnum', 'portioncode'),)
 
     def __str__(self):
         return self.portioncode.portiondescription + ": " + str(self.portionweight)

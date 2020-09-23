@@ -14,7 +14,7 @@ from .models import (Mainfooddesc,
 class MainfooddescFilter(filters.FilterSet):
     class Meta:
         model = Mainfooddesc
-        fields = ['foodcode', 'mainfooddescription', 'additionalDescriptions']
+        fields = ['foodcode', 'mainfooddescription', 'additionalDescriptions__additionalfooddescription']
         filter_overrides = {
             models.CharField: {
                 'filter_class': CharFilter,

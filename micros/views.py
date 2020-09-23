@@ -1,6 +1,5 @@
 # Django main imports
 from django.shortcuts import render
-from django.contrib.auth.models import User, Group
 from django.db.models import Q
 # Django Rest Framework imports
 from rest_framework import viewsets
@@ -11,9 +10,7 @@ from .models import (Mainfooddesc,
                      Foodportiondesc,
                      Fnddsnutval,
                      Nutdesc)
-from .serializers import (UserSerializer,
-                          GroupSerializer,
-                          MainfooddescSerializer,
+from .serializers import (MainfooddescSerializer,
                           AddfooddescSerializer,
                           FoodweightsSerializer,
                           FoodportiondescSerializer,
@@ -26,28 +23,6 @@ from .filters import (MainfooddescFilter,
                       NutdescFilter)
 from .pagination import (FoodWeightsSetPagination,
                          NutValSetPagination)
-
-
-def home(request):
-    context = {'home': 'home',
-               'foods': Mainfooddesc.objects.filter(mainfooddescription__icontains='milk')}
-    return render(request, 'micros/home.html', context)
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-
-
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
 
 
 class MainfooddescSearchView(viewsets.ReadOnlyModelViewSet):

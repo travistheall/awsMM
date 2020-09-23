@@ -1,4 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block body %}
+  <p>{{ mealname }}</p>
+  <img src="{{ photo.image.url }}">
+  <p>{{ photo.description }}<p>
+  <ul>
+    {% for food in foods %}
+      <li> {{ food.photo }}</li>
+      <li> {{ food.food }}</li>
+      <li> {{ food.servingSize }}</li>
+    {% endfor %}
+  </ul>
+  <p>hi {{ profile }}</p>
+  <ul>
+    {% for weight in weights %}
+      <li>{{ weight.weight }}</li>
+    {% endfor %}
+  </ul>
 {% endblock %}
