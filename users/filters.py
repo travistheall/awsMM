@@ -4,9 +4,10 @@ from django.db import models
 from django_filters import rest_framework as filters
 from django_filters import CharFilter
 # My imports
-from .models import (Weight,
-                     Photo,
-                     Food)
+from .models import (
+    Weight,
+    Photo,
+    Food)
 
 
 class WeightFilter(filters.FilterSet):
@@ -18,4 +19,4 @@ class WeightFilter(filters.FilterSet):
 class PhotoFilter(filters.FilterSet):
     class Meta:
         model = Photo
-        fields = ['created_at', 'meal']
+        fields = ['created_at', 'meal', 'profile']
