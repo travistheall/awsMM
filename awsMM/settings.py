@@ -94,7 +94,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://localhost:3306",
-    "http://127.0.0.1:3306"
+    "http://127.0.0.1:3306",
+    "http://ec2-3-15-155-66.us-east-2.compute.amazonaws.com",
+    "http://database-1.cp5ficdgf7kr.us-east-2.rds.amazonaws.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -103,7 +105,9 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://localhost:3306",
-    "http://127.0.0.1:3306"
+    "http://127.0.0.1:3306",
+    "http://ec2-3-15-155-66.us-east-2.compute.amazonaws.com",
+    "http://database-1.cp5ficdgf7kr.us-east-2.rds.amazonaws.com",
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -113,6 +117,8 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:8000",
     "http://localhost:3306",
     "http://127.0.0.1:3306"
+    "http://ec2-3-15-155-66.us-east-2.compute.amazonaws.com",
+    "http://database-1.cp5ficdgf7kr.us-east-2.rds.amazonaws.com",
 ]
 
 CORS_URLS_REGEX = r'^/api/.*$'
