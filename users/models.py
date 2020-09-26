@@ -33,7 +33,7 @@ class Profile(models.Model):
 
     """def get_calories(self):
         return int(((10 * (self.weight / self.weightUnit)) + (6.25 * (self.height * self.heightUnit)) - (
-            5 * self.age) + self.sex) * self.activityLevel)"""
+            5 * self.age) + self.sex) * self.activityLevel)
 
     def __str__(self):
         return self.user.username
@@ -46,7 +46,7 @@ class Profile(models.Model):
         if img.height > 300 or img.width > 300:
             output_size = (300, 300)
             img.thumbnail(output_size)
-            img.save(self.image.path)
+            img.save(self.image.path)"""
 
 
 class Weight(models.Model):

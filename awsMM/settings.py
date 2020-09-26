@@ -11,10 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import json
-
-with open('conf.json', 'r') as conf_file:
-    conf = json.load(conf_file)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = conf['SECRET_KEY']
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,7 +33,7 @@ ALLOWED_HOSTS = ['localhost',
                  '127.0.0.1:3000',
                  '127.0.0.1:8000',
                  '127.0.0.1:3306',
-                 'ec2-3-15-155-66.us-east-2.compute.amazonaws.com',
+                 'ec2-13-59-64-116.us-east-2.compute.amazonaws.comenvironme',
                  'database-1.cp5ficdgf7kr.us-east-2.rds.amazonaws.com']
 
 
@@ -57,6 +53,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'django_filters',
+    "storages",
 ]
 
 SITE_ID = 1
@@ -95,8 +92,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:3306",
     "http://127.0.0.1:3306",
-    "http://ec2-3-15-155-66.us-east-2.compute.amazonaws.com",
-    "http://database-1.cp5ficdgf7kr.us-east-2.rds.amazonaws.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -106,8 +101,6 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:3306",
     "http://127.0.0.1:3306",
-    "http://ec2-3-15-155-66.us-east-2.compute.amazonaws.com",
-    "http://database-1.cp5ficdgf7kr.us-east-2.rds.amazonaws.com",
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -117,8 +110,6 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:8000",
     "http://localhost:3306",
     "http://127.0.0.1:3306"
-    "http://ec2-3-15-155-66.us-east-2.compute.amazonaws.com",
-    "http://database-1.cp5ficdgf7kr.us-east-2.rds.amazonaws.com",
 ]
 
 CORS_URLS_REGEX = r'^/api/.*$'
@@ -151,12 +142,12 @@ WSGI_APPLICATION = 'awsMM.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': conf['NAME'],
-        'DATABASE': conf['DATABASE'],
-        'HOST': conf['HOST'],
-        'PORT': conf['PORT'],
-        'USER': conf['USER'],
-        'PASSWORD': conf['PASSWORD']
+        'NAME': os.environ.get('NAME'),
+        'DATABASE': os.environ.get('DATABASE'),
+        'HOST': os.environ.get('HOST'),
+        'PORT': os.environ.get('PORT'),
+        'USER': os.environ.get('USER'),
+        'PASSWORD': os.environ.get('PASSWORD')
     }
 }
 
@@ -201,3 +192,12 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+#AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+#AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+#AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
+
+#AWS_S3_FILE_OVERWRITE = False
+#AWS_DEFAULT_ACL = None
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

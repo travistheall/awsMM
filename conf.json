@@ -1,9 +1,0 @@
-{
-  "SECRET_KEY":"lxjz_m#$g6of18h@afngtmi995_nhvupnh72eza%qlp@mv*ce#",
-  "NAME": "nutrition",
-  "DATABASE": "micros_matter",
-  "HOST": "database-1.cp5ficdgf7kr.us-east-2.rds.amazonaws.com",
-  "PORT": "5432",
-  "USER": "postgres",
-  "PASSWORD": "eEW2%PZvm$7&"
-}
