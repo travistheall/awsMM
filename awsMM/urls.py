@@ -28,7 +28,7 @@ router.register('mealfoods', user_views.FoodSearchView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls))
+    path('', include(router.urls))
 ]
 
 urlpatterns += [
