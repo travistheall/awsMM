@@ -39,6 +39,7 @@ class FoodweightsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Foodweights
         fields = [
+            'id',
             'foodcode',
             'subcode',
             'seqnum',

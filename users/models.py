@@ -31,14 +31,10 @@ class Profile(models.Model):
     activityLevel = models.FloatField(choices=ACTIVITY_LEVEL_CHOICES,
                                       default=1.2)
 
-    """def get_calories(self):
-        return int(((10 * (self.weight / self.weightUnit)) + (6.25 * (self.height * self.heightUnit)) - (
-            5 * self.age) + self.sex) * self.activityLevel)
-
     def __str__(self):
         return self.user.username
 
-    def save(self, *args, **kwargs):
+    """def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
         img = Image.open(self.image.path)
@@ -65,8 +61,13 @@ class Weight(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
-    def __int__(self):
-        return self.weight
+    def __str__(self):
+        return f"{self.profile.user.username} {self.weight} {self.get_weightUnit_display()}"
+
+    def get_calories(self):
+        return int(
+            ((10 * (self.weight / self.weightUnit)) + (6.25 * (self.profile.height * self.profile.heightUnit)) - (
+                    5 * self.profile.age) + self.profile.sex) * self.profile.activityLevel)
 
 
 class Photo(models.Model):
@@ -89,6 +90,9 @@ class Photo(models.Model):
     description = models.CharField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.profile.user.username}'s {self.get_meal_display()} on {self.created_at}"
 
 
 class Food(models.Model):

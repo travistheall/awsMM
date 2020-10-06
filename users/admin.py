@@ -8,3 +8,4 @@ admin.site.register(Weight),
 admin.site.register(Photo),
 admin.site.register(Profile),
 admin.site.register(Food),
+

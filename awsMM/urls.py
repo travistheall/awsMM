@@ -1,6 +1,5 @@
 # Django main imports
 from django.conf import settings
-from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
@@ -10,6 +9,8 @@ from rest_framework.authtoken import views
 # My imports
 from micros import views as micros_views
 from users import views as user_views
+from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_simplejwt import views as jwt_views
 
 router = routers.DefaultRouter()
 router.register('maindesc', micros_views.MainfooddescSearchView)
@@ -26,13 +27,16 @@ router.register('userweight', user_views.WeightSearchView)
 router.register('photos', user_views.PhotoSearchView)
 router.register('mealfoods', user_views.FoodSearchView)
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('register/', user_views.registration_view, name='register'),
+    path('login/', obtain_auth_token, name='login')
 ]
 
 urlpatterns += [
-    url(r'^api-token-auth/', views.obtain_auth_token)
+    # path('api-auth/', include('rest_framework.urls')),
 ]
 
 if settings.DEBUG:

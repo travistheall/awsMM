@@ -1,10 +1,19 @@
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.views import APIView
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 # Django Rest Framework imports
-from rest_framework import viewsets
+from rest_framework import (permissions,
+                            viewsets,
+                            generics,
+                            mixins)
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, action, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from .models import (Profile,
                      Weight,
                      Photo,
@@ -14,22 +23,29 @@ from .serializers import (UserSerializer,
                           ProfileSerializer,
                           WeightSerializer,
                           PhotoSerializer,
-                          FoodSerializer)
+                          FoodSerializer,
+                          RegistrationSerializer)
 from .filters import (WeightFilter,
                       PhotoFilter)
+from .permissions import IsOwnerOrReadOnly
+from rest_framework.authtoken.models import Token
 
 
-def register(request):
+@api_view(['POST', ])
+def registration_view(request):
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Your account has been created! You are now able to log in')
-            return redirect('login')
-    else:
-        form = UserRegisterForm()
-    return render(request, 'users/register.html', {'form': form})
+        serializer = RegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            data = {
+                "response": "Successfully registers a new user",
+                "email": user.email,
+                "username": user.username,
+                "token": Token.objects.get(user=user).key
+            }
+        else:
+            data = serializer.errors
+        return Response(data)
 
 
 @login_required
@@ -63,6 +79,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
+    permission_classes = (permissions.IsAdminUser,)
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -71,6 +88,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    permission_classes = (permissions.IsAdminUser,)
 
 
 class ProfileSearchView(viewsets.ModelViewSet):
@@ -88,6 +106,8 @@ class WeightSearchView(viewsets.ModelViewSet):
     queryset = Weight.objects.all()
     serializer_class = WeightSerializer
     filterset_class = WeightFilter
+    permission_classes = (
+        IsOwnerOrReadOnly,)
 
 
 class PhotoSearchView(viewsets.ModelViewSet):
@@ -97,6 +117,9 @@ class PhotoSearchView(viewsets.ModelViewSet):
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
     filterset_class = PhotoFilter
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly, )
 
 
 class FoodSearchView(viewsets.ModelViewSet):
@@ -105,3 +128,5 @@ class FoodSearchView(viewsets.ModelViewSet):
     """
     queryset = Food.objects.all()
     serializer_class = FoodSerializer
+
+

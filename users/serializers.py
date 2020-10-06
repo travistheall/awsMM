@@ -1,26 +1,48 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+
 from .models import (Profile,
                      Weight,
                      Photo,
                      Food)
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = [
-            'url',
-            'username',
-            'email',
-            'groups'
-        ]
+        fields = '__all__'
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = ['url', 'name']
+
+
+# Register serializer
+class RegistrationSerializer(serializers.ModelSerializer):
+    password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password', 'password2', 'email')
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
+
+    def save(self):
+        user = User(username=self.validated_data['username'],
+                    email=self.validated_data['email'])
+        password = self.validated_data['password']
+        password2 = self.validated_data['password2']
+
+        if password != password2:
+            raise serializers.ValidationError({'password': 'Passwords must match.'})
+
+        user.set_password(password)
+        user.save()
+        return user
 
 
 class WeightSerializer(serializers.HyperlinkedModelSerializer):
@@ -33,6 +55,9 @@ class WeightSerializer(serializers.HyperlinkedModelSerializer):
             'created_at',
             'updated_at'
         ]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
@@ -83,6 +108,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         response['activityLevel'] = a_level
         return response
 
+
 class FoodSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Food
@@ -100,6 +126,7 @@ class PhotoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Photo
         fields = [
+            'id',
             'profile',
             'meal',
             'photos_foods',
