@@ -4,11 +4,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.views import APIView
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 # Django Rest Framework imports
 from rest_framework import (permissions,
                             viewsets,
+                            status,
                             generics,
                             mixins)
 from rest_framework.response import Response
@@ -24,53 +24,46 @@ from .serializers import (UserSerializer,
                           WeightSerializer,
                           PhotoSerializer,
                           FoodSerializer,
-                          RegistrationSerializer)
+                          CustomUserSerializer,
+                          MyTokenObtainPairSerializer,)
 from .filters import (WeightFilter,
                       PhotoFilter)
 from .permissions import IsOwnerOrReadOnly
-from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
+
+class ObtainTokenPair(TokenObtainPairView):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = MyTokenObtainPairSerializer
 
 
-@api_view(['POST', ])
-def registration_view(request):
-    if request.method == 'POST':
-        serializer = RegistrationSerializer(data=request.data)
+class UserCreate(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, format='json'):
+        serializer = CustomUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            data = {
-                "response": "Successfully registers a new user",
-                "email": user.email,
-                "username": user.username,
-                "token": Token.objects.get(user=user).key
-            }
-        else:
-            data = serializer.errors
-        return Response(data)
+            if user:
+                json = serializer.data
+                return Response(json, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@login_required
-def profile(request):
-    if request.method == 'POST':
-        u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = ProfileUpdateForm(request.POST,
-                                   request.FILES,
-                                   instance=request.user.profile)
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
-            p_form.save()
-            messages.success(request, f'Your account has been updated!')
-            return redirect('profile')
+class LogoutAndBlacklistRefreshTokenForUserView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
 
-    else:
-        u_form = UserUpdateForm(instance=request.user)
-        p_form = ProfileUpdateForm(instance=request.user.profile)
-
-    context = {
-        'u_form': u_form,
-        'p_form': p_form
-    }
-
-    return render(request, 'users/profile.html', context)
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -119,7 +112,7 @@ class PhotoSearchView(viewsets.ModelViewSet):
     filterset_class = PhotoFilter
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrReadOnly, )
+        IsOwnerOrReadOnly,)
 
 
 class FoodSearchView(viewsets.ModelViewSet):
@@ -128,5 +121,3 @@ class FoodSearchView(viewsets.ModelViewSet):
     """
     queryset = Food.objects.all()
     serializer_class = FoodSerializer
-
-

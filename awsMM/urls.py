@@ -5,7 +5,6 @@ from django.contrib import admin
 from django.urls import path, include
 # Django Rest Framework imports
 from rest_framework import routers
-from rest_framework.authtoken import views
 # My imports
 from micros import views as micros_views
 from users import views as user_views
@@ -30,9 +29,12 @@ router.register('mealfoods', user_views.FoodSearchView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(router.urls)),
-    path('register/', user_views.registration_view, name='register'),
-    path('login/', obtain_auth_token, name='login')
+    path('api/', include(router.urls)),
+    path('api/user/create/', user_views.UserCreate.as_view(), name="create_user"),
+    path('api/blacklist/', user_views.LogoutAndBlacklistRefreshTokenForUserView.as_view(), name='blacklist'),
+    path('api/token/obtain/', jwt_views.TokenObtainPairView.as_view(), name='token_create'),  # override sjwt stock token
+    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+
 ]
 
 urlpatterns += [
