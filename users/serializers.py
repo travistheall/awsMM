@@ -1,29 +1,29 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
+from rest_framework_jwt.settings import api_settings
 from .models import (Profile,
                      Weight,
                      Photo,
                      Food)
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super(MyTokenObtainPairSerializer, cls).get_token(user)
-        return token
-
-
-class CustomUserSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(required=True)
-    username = serializers.CharField()
-    password = serializers.CharField(min_length=8, write_only=True)
-
+class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'username', 'password')
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ('username', 'id')
+
+
+class UserSerializerWithToken(serializers.ModelSerializer):
+    token = serializers.SerializerMethodField()
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def get_token(self, obj):
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+        payload = jwt_payload_handler(obj)
+        token = jwt_encode_handler(payload)
+        return token
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
@@ -33,11 +33,15 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    class Meta:
+        model = User
+        fields = ('token', 'username', 'password', 'email')
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['username', 'first_name', 'last_name', 'email']
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
@@ -46,44 +50,10 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'name']
 
 
-# Register serializer
-class RegistrationSerializer(serializers.ModelSerializer):
-    password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'password', 'password2', 'email')
-        extra_kwargs = {
-            'password': {'write_only': True},
-        }
-
-    def save(self):
-        user = User(username=self.validated_data['username'],
-                    email=self.validated_data['email'])
-        password = self.validated_data['password']
-        password2 = self.validated_data['password2']
-
-        if password != password2:
-            raise serializers.ValidationError({'password': 'Passwords must match.'})
-
-        user.set_password(password)
-        user.save()
-        return user
-
-
 class WeightSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Weight
-        fields = [
-            'weight',
-            'weightUnit',
-            'profile',
-            'created_at',
-            'updated_at'
-        ]
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        fields = "__all__"
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
@@ -97,7 +67,8 @@ class WeightSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
-    weights = WeightSerializer(many=True, read_only=True)
+    weights = WeightSerializer(many=True, read_only=False)
+    user = UserSerializer(many=False, read_only=False)
 
     class Meta:
         model = Profile

@@ -58,7 +58,7 @@ class Weight(models.Model):
                                 related_name="weights",
                                 blank=True,
                                 null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     def __str__(self):

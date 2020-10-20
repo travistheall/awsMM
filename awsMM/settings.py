@@ -46,7 +46,6 @@ INSTALLED_APPS = [
 
     'django_extensions',
     'rest_framework',
-    'rest_framework.authtoken',
     'django_filters',
     'corsheaders',
 ]
@@ -57,17 +56,7 @@ DEFAULT_RENDERER_CLASSES = ['rest_framework.renderers.JSONRenderer']
 if DEBUG:
     DEFAULT_RENDERER_CLASSES += ['rest_framework.renderers.BrowsableAPIRenderer']
 
-REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.AllowAny',
-    ),
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
-}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -80,27 +69,24 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication'
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
 
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-]
-
-CORS_URLS_REGEX = r'^/api/.*$'
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'awsMM.urls'
 
@@ -177,3 +163,7 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'awsMM.utils.my_jwt_response_handler'
+}

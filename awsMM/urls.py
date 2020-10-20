@@ -5,11 +5,11 @@ from django.contrib import admin
 from django.urls import path, include
 # Django Rest Framework imports
 from rest_framework import routers
+from rest_framework_jwt.views import obtain_jwt_token
 # My imports
 from micros import views as micros_views
 from users import views as user_views
-from rest_framework.authtoken.views import obtain_auth_token
-from rest_framework_simplejwt import views as jwt_views
+
 
 router = routers.DefaultRouter()
 router.register('maindesc', micros_views.MainfooddescSearchView)
@@ -30,16 +30,10 @@ router.register('mealfoods', user_views.FoodSearchView)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api/user/create/', user_views.UserCreate.as_view(), name="create_user"),
-    path('api/blacklist/', user_views.LogoutAndBlacklistRefreshTokenForUserView.as_view(), name='blacklist'),
-    path('api/token/obtain/', jwt_views.TokenObtainPairView.as_view(), name='token_create'),  # override sjwt stock token
-    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
-
+    path('accounts/', include('users.urls')),
+    path('token-auth/', obtain_jwt_token)
 ]
 
-urlpatterns += [
-    # path('api-auth/', include('rest_framework.urls')),
-]
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

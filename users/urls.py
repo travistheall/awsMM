@@ -1,11 +1,7 @@
-from django.urls import path, include
-from rest_framework import routers
-from . import views
-
-app_name = 'users'
-
-router = routers.DefaultRouter()
+from django.urls import path
+from .views import current_user, UserList
 
 urlpatterns = [
-    path('photo-detail', views.PhotoDetail, name='photo-detail')
+    path('current_user/', current_user),
+    path('users/', UserList.as_view())
 ]
