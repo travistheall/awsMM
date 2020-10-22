@@ -88,6 +88,7 @@ class Photo(models.Model):
     meal = models.CharField(choices=MEAL_CHOICES, max_length=3, default='b')
     image = models.ImageField(upload_to='meal_pics', blank=True, null=True)
     description = models.CharField(max_length=500, blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

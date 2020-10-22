@@ -110,10 +110,11 @@ class FoodSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Food
         fields = [
+            'photo',
             'food',
             'servingSize',
             'taken_serving',
-            'returned_serving'
+            'returned_serving',
         ]
 
 
@@ -130,7 +131,8 @@ class PhotoSerializer(serializers.HyperlinkedModelSerializer):
             'image',
             'description',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'date'
         ]
 
     def to_representation(self, instance):
