@@ -70,38 +70,36 @@ class Weight(models.Model):
                     5 * self.profile.age) + self.profile.sex) * self.profile.activityLevel)
 
 
-class Photo(models.Model):
+class Meal(models.Model):
+    id = models.CharField(max_length=50, primary_key=True, blank=False, null=False)
     profile = models.ForeignKey(Profile,
                                 on_delete=models.DO_NOTHING,
-                                related_name="meal_photos",
+                                related_name="profiles_meals",
                                 blank=True,
                                 null=True)
     MEAL_CHOICES = [
         ("b", "Breakfast"),
-        ("ms", "Morning Snack"),
         ("l", "Lunch"),
-        ("as", "Afternoon Snack"),
         ("d", "Dinner"),
-        ("es", "Evening Snack"),
-        ("mns", "Midnight Snack"),
+        ("s", "Snack"),
     ]
-    meal = models.CharField(choices=MEAL_CHOICES, max_length=3, default='b')
+    name = models.CharField(choices=MEAL_CHOICES, max_length=1, default='b')
     image = models.ImageField(upload_to='meal_pics', blank=True, null=True)
     description = models.CharField(max_length=500, blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.profile.user.username}'s {self.get_meal_display()} on {self.created_at}"
+        return f"{self.id}"
 
 
 class Food(models.Model):
-    photo = models.ForeignKey(Photo,
+    meal = models.ForeignKey(Meal,
                               on_delete=models.DO_NOTHING,
-                              related_name="photos_foods",
+                              related_name="meals_foods",
                               blank=True,
                               null=True)
-    food = models.ForeignKey(Mainfooddesc, on_delete=models.DO_NOTHING, related_name="foods_in_photo")
+    food = models.ForeignKey(Mainfooddesc, on_delete=models.DO_NOTHING, related_name="foods_in_meal")
     servingSize = models.ForeignKey(Foodweights,
                                     related_name="portion_sizes",
                                     null=True,

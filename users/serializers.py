@@ -3,8 +3,10 @@ from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 from .models import (Profile,
                      Weight,
-                     Photo,
+                     Meal,
                      Food)
+from micros.serializers import (MealMainfooddescSerializer,
+                                MealFoodweightsSerializer)
 
 
 class CurrentUserSerializer(serializers.ModelSerializer):
@@ -106,7 +108,10 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         return response
 
 
-class FoodSerializer(serializers.HyperlinkedModelSerializer):
+class FoodSerializer(serializers.ModelSerializer):
+    food = MealMainfooddescSerializer(many=False, read_only=True)
+    servingSize = MealFoodweightsSerializer(many=False, read_only=True)
+
     class Meta:
         model = Food
         fields = [
@@ -116,34 +121,68 @@ class FoodSerializer(serializers.HyperlinkedModelSerializer):
             'returned_serving'
         ]
 
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        foodResp = response['food']
+        nutrients = foodResp['nutrientvalues']
+        taken = response['taken_serving']
+        if response['servingSize'] is not None:
+            servingWeight = response['servingSize']['portionweight']
+            for nutrient in nutrients:
+                nutval = round(((servingWeight * taken) / 100) * nutrient['nutrientvalue'], 1)
+                response[nutrient['nutrientcode']] = nutval
+        else:
+            for nutrient in nutrients:
+                nutval = round(nutrient['nutrientvalue'] * taken, 1)
+                response[nutrient['nutrientcode']] = nutval
 
-class PhotoSerializer(serializers.HyperlinkedModelSerializer):
-    photos_foods = FoodSerializer(many=True, read_only=True)
+        return response
+
+
+class MealSerializer(serializers.HyperlinkedModelSerializer):
+    meals_foods = FoodSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Photo
+        model = Meal
         fields = [
             'id',
             'profile',
-            'meal',
-            'photos_foods',
+            'name',
+            'meals_foods',
             'image',
             'description',
             'created_at',
-            'updated_at'
+            'date'
         ]
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
         MEAL_CHOICES = {
             "b": "Breakfast",
-            "ms": "Morning Snack",
+            "s": "Snack",
             "l": 'Lunch',
-            "as": "Afternoon Snack",
-            "d": "Dinner",
-            "es": "Evening Snack",
-            "mns": "Midnight Snack"
+            "d": "Dinner"
         }
-        mealName = MEAL_CHOICES.get(instance.meal)
-        response['meal'] = mealName
+        MEAL_ORDER = {
+            "b": 0,
+            "l": 1,
+            "d": 2,
+            "s": 3,
+        }
+        mealName = MEAL_CHOICES.get(response['name'])
+        mealOrder = MEAL_ORDER.get(response['name'])
+        foods = response['meals_foods']
+        macros = {
+            "Protein": 0,
+            "Total Fat": 0,
+            "Carbohydrate": 0,
+            "Energy": 0
+        }
+        for food in foods:
+            for macro in macros.keys():
+                macros[macro] += food[macro]
+                macros[macro] = round(macros[macro], 1)
+        response['order'] = mealOrder
+        response['name'] = mealName
+        response['meal_macros'] = macros
         return response

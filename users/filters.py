@@ -1,12 +1,10 @@
 # Django Filters imports
 from django_filters import rest_framework as filters
 # My imports
-from .models import Photo, Profile
+from .models import Meal, Profile
 
 
-class PhotoFilter(filters.FilterSet):
+class MealFilter(filters.FilterSet):
     class Meta:
-        model = Photo
-        fields = ['created_at', 'meal', 'profile']
-
-
+        model = Meal
+        fields = ['date', 'name', 'profile']

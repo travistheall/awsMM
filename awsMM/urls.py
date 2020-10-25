@@ -6,6 +6,8 @@ from django.urls import path, include
 # Django Rest Framework imports
 from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_jwt.views import refresh_jwt_token
+from rest_framework_jwt.views import verify_jwt_token
 # My imports
 from micros import views as micros_views
 from users import views as user_views
@@ -23,7 +25,7 @@ router.register('users', user_views.UserViewSet)
 router.register('groups', user_views.GroupViewSet)
 router.register('profile', user_views.ProfileSearchView)
 router.register('userweight', user_views.WeightSearchView)
-router.register('photos', user_views.PhotoSearchView)
+router.register('meals', user_views.MealSearchView)
 router.register('mealfoods', user_views.FoodSearchView)
 
 
@@ -31,7 +33,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('accounts/', include('users.urls')),
-    path('token-auth/', obtain_jwt_token)
+    path('token-auth/', obtain_jwt_token),
+    path('token-refresh/', refresh_jwt_token),
+    path('token-verify/', verify_jwt_token),
 ]
 
 

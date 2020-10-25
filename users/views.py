@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import (Profile,
                      Weight,
-                     Photo,
+                     Meal,
                      Food)
 from .serializers import (CurrentUserSerializer,
                           UserSerializerWithToken,
@@ -16,9 +16,9 @@ from .serializers import (CurrentUserSerializer,
                           GroupSerializer,
                           ProfileSerializer,
                           WeightSerializer,
-                          PhotoSerializer,
+                          MealSerializer,
                           FoodSerializer,)
-from .filters import PhotoFilter
+from .filters import MealFilter
 from .permissions import IsOwnerOrReadOnly
 
 
@@ -78,13 +78,13 @@ class WeightSearchView(viewsets.ModelViewSet):
     serializer_class = WeightSerializer
 
 
-class PhotoSearchView(viewsets.ModelViewSet):
+class MealSearchView(viewsets.ModelViewSet):
     """
-    API endpoint that allows user photos to be viewed or edited.
+    API endpoint that allows user meals to be viewed or edited.
     """
-    queryset = Photo.objects.all()
-    serializer_class = PhotoSerializer
-    filterset_class = PhotoFilter
+    queryset = Meal.objects.all()
+    serializer_class = MealSerializer
+    filterset_class = MealFilter
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly,)
