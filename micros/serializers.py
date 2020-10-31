@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import (Mainfooddesc,
-                     Addfooddesc,
-                     Foodweights,
-                     Foodportiondesc,
-                     Fnddsnutval,
-                     Nutdesc)
+from micros.models import (Mainfooddesc,
+                           Addfooddesc,
+                           Foodweights,
+                           Foodportiondesc,
+                           Fnddsnutval,
+                           Nutdesc)
 
 
 class AddfooddescSerializer(serializers.ModelSerializer):

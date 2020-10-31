@@ -1,5 +1,4 @@
 # Django main imports
-from django.shortcuts import render
 from django.db.models import Q
 # Django Rest Framework imports
 from rest_framework import viewsets
@@ -10,12 +9,12 @@ from .models import (Mainfooddesc,
                      Foodportiondesc,
                      Fnddsnutval,
                      Nutdesc)
-from .serializers import (MainfooddescSerializer,
-                          AddfooddescSerializer,
-                          FoodweightsSerializer,
-                          FoodportiondescSerializer,
-                          FnddsnutvalSerializer,
-                          NutdescSerializer)
+from micros.serializers import (MainfooddescSerializer,
+                                AddfooddescSerializer,
+                                FoodweightsSerializer,
+                                FoodportiondescSerializer,
+                                FnddsnutvalSerializer,
+                                NutdescSerializer)
 from .filters import (MainfooddescFilter,
                       AddfooddescFilter,
                       FoodweightsFilter,

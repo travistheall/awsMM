@@ -18,6 +18,7 @@ from .serializers import (CurrentUserSerializer,
                           WeightSerializer,
                           MealSerializer,
                           FoodSerializer,)
+from .CRUDserializers import CRUDFoodSerializer
 from .filters import MealFilter
 from .permissions import IsOwnerOrReadOnly
 
@@ -96,3 +97,11 @@ class FoodSearchView(viewsets.ModelViewSet):
     """
     queryset = Food.objects.all()
     serializer_class = FoodSerializer
+
+
+class FoodCRUDView(viewsets.ModelViewSet):
+    """
+    API endpoint that allows user foods to be viewed or edited.
+    """
+    queryset = Food.objects.all()
+    serializer_class = CRUDFoodSerializer

@@ -27,7 +27,7 @@ router.register('profile', user_views.ProfileSearchView)
 router.register('userweight', user_views.WeightSearchView)
 router.register('meals', user_views.MealSearchView)
 router.register('mealfoods', user_views.FoodSearchView)
-
+router.register('crudmealfoods', user_views.FoodCRUDView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

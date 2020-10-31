@@ -167,7 +167,7 @@ MEDIA_URL = '/media/'
 #awsMM.utils.my_jwt_response_handler
 JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'awsMM.utils.my_jwt_response_handler',
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=5),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
     'JWT_ALLOW_REFRESH': True,
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 }

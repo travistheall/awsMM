@@ -109,12 +109,13 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class FoodSerializer(serializers.ModelSerializer):
-    food = MealMainfooddescSerializer(many=False, read_only=True)
-    servingSize = MealFoodweightsSerializer(many=False, read_only=True)
+    food = MealMainfooddescSerializer(many=False, read_only=False)
+    servingSize = MealFoodweightsSerializer(many=False, read_only=False)
 
     class Meta:
         model = Food
         fields = [
+            'meal',
             'food',
             'servingSize',
             'taken_serving',
