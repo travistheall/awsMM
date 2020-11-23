@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'micros.apps.MicrosConfig',
     'users.apps.UsersConfig',
 
+    'debug_toolbar',
     'django_extensions',
     'rest_framework',
     'django_filters',
@@ -63,8 +64,11 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -77,15 +81,19 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication'
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication'
     ],
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -117,10 +125,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': "nutrition",
-        'DATABASE': "micros_matter",
-        'HOST': os.environ.get('HOST'),
+        'DATABASE': "nutrition",
+        'HOST': '127.0.0.1',
         'PORT': "5432",
-        'USER': "postgres",
+        'USER': "tnt",
         'PASSWORD': os.environ.get('PASSWORD')
     }
 }

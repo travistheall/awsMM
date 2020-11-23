@@ -76,6 +76,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         model = Profile
         fields = [
             'user',
+            'isDark',
             'image',
             'sex',
             'age',

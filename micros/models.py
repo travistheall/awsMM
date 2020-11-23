@@ -9,8 +9,14 @@ class Mainfooddesc(models.Model):
     wweia_categorydescription = models.CharField(db_column='WWEIA_CategoryDescription', max_length=80)
     startdate = models.DateTimeField(db_column='StartDate')
     enddate = models.DateTimeField(db_column='EndDate')
+    # Addfooddesc related_name = 'additionalDescriptions'
+    # Fnddsnutval related_name='nutrientvalues'
+    # Foodweights related_name='foodweights'
+    # Fnddsingred related_name='foodcode_ingredients'
+
 
     class Meta:
+        ordering = ['foodcode']
         managed = False
         db_table = 'MainFoodDesc'
 
@@ -27,11 +33,14 @@ class Mainfooddesc(models.Model):
         )
 
 
+
 class Foodportiondesc(models.Model):
     portioncode = models.IntegerField(db_column='PortionCode', primary_key=True)
     portiondescription = models.CharField(db_column='PortionDescription', max_length=120)
     startdate = models.DateTimeField(db_column='StartDate')
     enddate = models.DateTimeField(db_column='EndDate')
+    # Foodportiondesc related_name='portionweights'
+    # Fnddsingred related_name='portion_ingredients'
 
     class Meta:
         managed = False
@@ -47,6 +56,8 @@ class Nutdesc(models.Model):
     tagname = models.CharField(db_column='Tagname', max_length=15, blank=True, null=True)
     unit = models.CharField(db_column='Unit', max_length=10)
     decimals = models.SmallIntegerField(db_column='Decimals')
+    # Foodweights related_name='portionweights'
+    # Fnddsnutval related_name='nutrientdescriptions'
 
     class Meta:
         managed = False
@@ -107,7 +118,6 @@ class Addfooddesc(models.Model):
     additionalfooddescription = models.CharField(db_column='AdditionalFoodDescription', max_length=80)
     startdate = models.DateTimeField(db_column='StartDate')
     enddate = models.DateTimeField(db_column='EndDate')
-
     # id = models.IntegerField(blank=True, null=True)
 
     class Meta:

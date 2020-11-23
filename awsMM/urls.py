@@ -1,3 +1,4 @@
+import debug_toolbar
 # Django main imports
 from django.conf import settings
 from django.conf.urls.static import static
@@ -14,12 +15,9 @@ from users import views as user_views
 
 
 router = routers.DefaultRouter()
+router.register('foodsearch', micros_views.FoodSearchView)
+router.register('nutvalabb', micros_views.PortionNutValSearchView)
 router.register('maindesc', micros_views.MainfooddescSearchView)
-router.register('adddesc', micros_views.AddfooddescSearchView)
-router.register('weights', micros_views.FoodweightsSearchView)
-router.register('portiondesc', micros_views.FoodportiondescSearchView)
-router.register('nutvalabb', micros_views.FnddsnutvalAbbrevSearchView)
-router.register('nutdesc', micros_views.NutdescSearchView)
 
 router.register('users', user_views.UserViewSet)
 router.register('groups', user_views.GroupViewSet)
@@ -29,6 +27,7 @@ router.register('meals', user_views.MealSearchView)
 router.register('mealfoods', user_views.FoodSearchView)
 router.register('crudmealfoods', user_views.FoodCRUDView)
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
@@ -36,6 +35,7 @@ urlpatterns = [
     path('token-auth/', obtain_jwt_token),
     path('token-refresh/', refresh_jwt_token),
     path('token-verify/', verify_jwt_token),
+    path('__debug__/', include(debug_toolbar.urls)),
 ]
 
 

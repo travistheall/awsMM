@@ -1,13 +1,13 @@
 asgiref==3.2.10
 boto3==1.15.6
 botocore==1.18.6
-Django==3.1.1
-django-cors-headers==3.5.0
-django-extensions==3.0.9
-django-filter==2.3.0
-django-storages==1.10.1
-djangorestframework==3.11.1
-djangorestframework-jwt~=1.11.0
+Django>=3.1.1
+django-cors-headers>=3.5.0
+django-extensions>=3.0.9
+django-filter>=2.3.0
+django-storages>=1.10.1
+djangorestframework>=3.11.1
+djangorestframework-jwt>=1.11.0
 Markdown==3.2.2
 Pillow==7.2.0
 psycopg2-binary==2.8.6
@@ -17,3 +17,5 @@ s3transfer==0.3.3
 six==1.15.0
 sqlparse==0.3.1
 urllib3==1.25.10
+
+django-debug-toolbar~=3.1.1

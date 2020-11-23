@@ -7,6 +7,7 @@ from micros.models import Mainfooddesc, Foodweights
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='user.png', upload_to='profile_pics')
+    isDark = models.BooleanField(default=False)
     SEX_CHOICES = [
         (5, "Male"),
         (-161, "Female")
