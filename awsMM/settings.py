@@ -124,11 +124,11 @@ WSGI_APPLICATION = 'awsMM.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "nutrition",
-        'DATABASE': "nutrition",
+        'NAME': "awsMM",
+        'DATABASE': "awsMM",
         'HOST': '127.0.0.1',
         'PORT': "5432",
-        'USER': "tnt",
+        'USER': "postgres",
         'PASSWORD': os.environ.get('PASSWORD')
     }
 }

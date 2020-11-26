@@ -108,3 +108,5 @@ class Food(models.Model):
                                     on_delete=models.SET_NULL)
     taken_serving = models.FloatField(blank=True, null=True)
     returned_serving = models.FloatField(blank=True, null=True)
+
+
